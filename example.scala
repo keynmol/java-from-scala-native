@@ -90,7 +90,6 @@ import constants.*
         printlnMethod,
         toCVarArgList(otherHello),
       )
-
     end if
 
 // look at this shit
@@ -101,9 +100,6 @@ inline def doublePointer[A: Tag](value: A) =
   !ptr1 = value
 
   ptr2
-
-inline def doubleOpaquePointer[A: Tag](value: A) =
-  doublePointer(value).asInstanceOf[Ptr[Ptr[Byte]]]
 
 // these are macros in C and cannot be generate by bindgen, so we define them manually
 object constants:
