@@ -21,3 +21,5 @@ run:
 		--native-linking -Wl,-rpath --native-linking $(java_home)/lib \
 		--native-linking -Wl,-rpath --native-linking $(java_home)/lib/server
 
+custom-classpath:
+	cs fetch -p org.scala-lang:scala-library:2.13.15 > custom-classpath
