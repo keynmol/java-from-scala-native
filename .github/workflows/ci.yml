@@ -26,4 +26,4 @@ jobs:
       - uses: VirtusLab/scala-cli-setup@main
 
       - name: Test
-        run: make custom-classpath run
+        run: make CLASSPATH run
