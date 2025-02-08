@@ -9,23 +9,24 @@ import constants.*
     val args  = JavaVMInitArgs()
     (!args).version = jint(0x00010008) // JNI_VERSION_1_8
 
-    val hasCustomClasspath =
-      val customClasspath = os.Path("./custom-classpath", os.pwd)
-      if os.exists(customClasspath) then
-        val cp      = "-Djava.class.path=" + os.read(customClasspath).trim
-        val options = alloc[JavaVMOption](2)
+    val customClasspath =
+      sys.env
+        .get("CLASSPATH")
+        .map(_.trim)
+        .orElse:
+          val path = os.Path("./CLASSPATH", os.pwd)
+          Option.when(os.exists(path)):
+            os.read(path).trim
 
-        options(0).optionString = toCString(cp)
-        options(1).optionString = c"-verbose:class"
-
-        (!args).options = options
-        (!args).nOptions = jint(1)
-        true
-      else
+    customClasspath match
+      case None =>
         (!args).nOptions = jint(0)
-        false
-      end if
-    end hasCustomClasspath
+      case Some(value) =>
+        val cp = "-Djava.class.path=" + value
+        (!args).options = JavaVMOption(toCString(cp), null)
+        (!args).nOptions = jint(1)
+
+    val hasCustomClasspath = customClasspath.nonEmpty
 
     val vm  = doublePointer(JavaVM(iface))
     val env = doublePointer[JNIEnv](JNIEnv(null))
